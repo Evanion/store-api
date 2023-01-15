@@ -6,9 +6,16 @@ import { AppService } from './app/app.service';
 import { AppResolver } from './app/app.resolver';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'db/store.sqlite',
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,

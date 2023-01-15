@@ -10,10 +10,11 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
 
-@Controller('product')
+@ApiTags('product')
+@Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -33,9 +34,14 @@ export class ProductController {
   }
 
   @ApiResponse({ status: 200, description: 'The found Product', type: Product })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: '515aa04a-9913-494e-a16d-cd2340a0042d',
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+    return this.productService.findOne(id);
   }
 
   @ApiResponse({
@@ -43,9 +49,14 @@ export class ProductController {
     description: 'The updated Product',
     type: Product,
   })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: '515aa04a-9913-494e-a16d-cd2340a0042d',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+    return this.productService.update(id, updateProductDto);
   }
 
   @ApiResponse({
@@ -53,8 +64,13 @@ export class ProductController {
     description: 'The number of removed products',
     type: Number,
   })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    example: '515aa04a-9913-494e-a16d-cd2340a0042d',
+  })
   @Delete(':id')
-  remove(@Param('id') id: string): number {
-    return this.productService.remove(+id);
+  remove(@Param('id') id: string) {
+    return this.productService.remove(id);
   }
 }

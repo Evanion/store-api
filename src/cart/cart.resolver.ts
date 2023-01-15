@@ -1,16 +1,16 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CartService } from './cart.service';
 import { Cart } from './entities/cart.entity';
-import { CreateCartInput } from './dto/create-cart.input';
-import { UpdateCartInput } from './dto/update-cart.input';
+import { AddCartItemDto } from './dto/add-cart-item.dto';
+import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
 @Resolver(() => Cart)
 export class CartResolver {
   constructor(private readonly cartService: CartService) {}
 
   @Mutation(() => Cart)
-  createCart(@Args('createCartInput') createCartInput: CreateCartInput) {
-    return this.cartService.create(createCartInput);
+  createCart(@Args('createCartInput') addItemDto: AddCartItemDto) {
+    return this.cartService.create(addItemDto);
   }
 
   @Query(() => [Cart], { name: 'cart' })
@@ -19,17 +19,20 @@ export class CartResolver {
   }
 
   @Query(() => Cart, { name: 'cart' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.cartService.findOne(id);
   }
 
   @Mutation(() => Cart)
-  updateCart(@Args('updateCartInput') updateCartInput: UpdateCartInput) {
-    return this.cartService.update(updateCartInput.id, updateCartInput);
+  updateCart(
+    @Args('cartId') cartId: string,
+    @Args('updateCartInput') updateCartDto: UpdateCartItemDto,
+  ) {
+    return this.cartService.update(cartId, updateCartDto);
   }
 
   @Mutation(() => Cart)
-  removeCart(@Args('id', { type: () => Int }) id: number) {
+  removeCart(@Args('id') id: string) {
     return this.cartService.remove(id);
   }
 }

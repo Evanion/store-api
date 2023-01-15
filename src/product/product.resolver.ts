@@ -21,7 +21,7 @@ export class ProductResolver {
   }
 
   @Query(() => Product, { name: 'product' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id') id: string) {
     return this.productService.findOne(id);
   }
 
@@ -36,7 +36,7 @@ export class ProductResolver {
   }
 
   @Mutation(() => Product)
-  removeProduct(@Args('id', { type: () => Int }) id: number) {
+  removeProduct(@Args('id') id: string) {
     return this.productService.remove(id);
   }
 }
