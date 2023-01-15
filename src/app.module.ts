@@ -12,6 +12,8 @@ import { CartModule } from './cart/cart.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      introspection: true,
+      playground: true,
     }),
     ProductModule,
     CartModule,
