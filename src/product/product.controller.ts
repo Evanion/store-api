@@ -6,11 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
 
 @ApiTags('product')
@@ -28,9 +29,23 @@ export class ProductController {
     description: 'The found Products',
     type: [Product],
   })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'The number of products to return',
+    example: 5,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'offset',
+    type: Number,
+    description: 'The number of products to skip (allows you to paginate)',
+    example: 0,
+    required: false,
+  })
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query('limit') limit = 5, @Query('offset') offset = 0) {
+    return this.productService.findAll(limit, offset);
   }
 
   @ApiResponse({ status: 200, description: 'The found Product', type: Product })

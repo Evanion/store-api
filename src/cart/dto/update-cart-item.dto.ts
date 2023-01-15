@@ -1,5 +1,5 @@
-import { AddCartItemDto } from './add-cart-item.dto';
-import { InputType, PartialType } from '@nestjs/graphql';
+import { AddToCartDto } from './add-to-cart.dto';
+import { InputType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateCartItemDto extends PartialType(AddCartItemDto) {}
+export class UpdateCartItemDto extends AddToCartDto {}

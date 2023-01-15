@@ -15,8 +15,8 @@ export class ProductService {
     return this.productRepository.save(createProductDto);
   }
 
-  findAll() {
-    return this.productRepository.find();
+  findAll(limit = 5, offset = 0) {
+    return this.productRepository.find({ take: limit, skip: offset });
   }
 
   findOne(id: string) {

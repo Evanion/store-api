@@ -15,9 +15,12 @@ export class ProductResolver {
     return this.productService.create(createProductInput);
   }
 
-  @Query(() => [Product], { name: 'product' })
-  findAll() {
-    return this.productService.findAll();
+  @Query(() => [Product], { name: 'products' })
+  findAll(
+    @Args('limit', { type: () => Int, nullable: true }) limit = 5,
+    @Args('offset', { type: () => Int, nullable: true }) offset = 0,
+  ) {
+    return this.productService.findAll(limit, offset);
   }
 
   @Query(() => Product, { name: 'product' })

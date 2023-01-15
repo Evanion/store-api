@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AddCartItemDto } from './dto/add-cart-item.dto';
+import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './entities/cart.entity';
@@ -11,9 +11,39 @@ export class CartService {
     @InjectRepository(Cart)
     private readonly cartRepository: Repository<Cart>,
   ) {}
-  async create(addItemDto: AddCartItemDto) {
-    const cart = await this.cartRepository.create({ items: [addItemDto] });
+
+  /**
+   * Create a new cart
+   * @param addToCart Item to add to cart
+   */
+  create(addToCart: AddToCartDto) {
+    const cart = this.cartRepository.create({ items: [addToCart] });
     return this.cartRepository.save(cart);
+  }
+
+  /**
+   * Update an existing cart
+   * @param cartId The id of the cart to update
+   * @param updateCartItemDto Item to update
+   * @returns new cart state
+   */
+  async update(cartId: string, updateCartItemDto: UpdateCartItemDto) {
+    const cart = await this.cartRepository.findOneBy({ id: cartId });
+    let updated = false;
+    cart.items.map((item) => {
+      if (item.product === updateCartItemDto.product) {
+        updated = true;
+        return updateCartItemDto;
+      }
+      return item;
+    });
+    if (!updated) cart.items.push(updateCartItemDto);
+    return this.cartRepository.update(cartId, cart);
+  }
+
+  addToCart(addToCart: AddToCartDto, cartId?: string) {
+    if (cartId) return this.update(cartId, addToCart);
+    return this.create(addToCart);
   }
 
   findAll() {
@@ -22,14 +52,6 @@ export class CartService {
 
   findOne(id: string) {
     return this.cartRepository.findOneBy({ id });
-  }
-
-  async update(cartId: string, updateCartItemDto: UpdateCartItemDto) {
-    const cart = await this.cartRepository.findOneBy({ id: cartId });
-    cart.items.map((item) =>
-      item.product === updateCartItemDto.product ? updateCartItemDto : item,
-    );
-    return this.cartRepository.update(cartId, cart);
   }
 
   remove(id: string) {

@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CartService } from './cart.service';
 import { Cart } from './entities/cart.entity';
-import { AddCartItemDto } from './dto/add-cart-item.dto';
+import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
 @Resolver(() => Cart)
@@ -9,13 +9,11 @@ export class CartResolver {
   constructor(private readonly cartService: CartService) {}
 
   @Mutation(() => Cart)
-  createCart(@Args('createCartInput') addItemDto: AddCartItemDto) {
-    return this.cartService.create(addItemDto);
-  }
-
-  @Query(() => [Cart], { name: 'cart' })
-  findAll() {
-    return this.cartService.findAll();
+  addToCart(
+    @Args('addToCartDto') addToCartDto: AddToCartDto,
+    @Args('id', { nullable: true }) id?: string,
+  ) {
+    return this.cartService.addToCart(addToCartDto, id);
   }
 
   @Query(() => Cart, { name: 'cart' })
